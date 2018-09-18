@@ -8,7 +8,7 @@ usage() {
 delete_all_artifacts() {
   aws ec2 delete-key-pair \
     --key-name ${stack_name}
-  aws s3 rm --recursive \
+  aws s3 rm --recursive --quiet \
     s3://${s3_bucket}/deployments/${stack_name}
 }
 
