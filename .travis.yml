@@ -1,0 +1,8 @@
+---
+language: bash
+before_script:
+  - "sudo curl -o /usr/local/bin/shunit2 https://raw.githubusercontent.com/kward/shunit2/master/shunit2"
+  - "sudo curl -o /usr/local/bin/placebo https://raw.githubusercontent.com/alexharv074/bash_placebo/master/placebo"
+script: "bash shunit2/delete_stack.sh"
+notifications:
+  email: false
