@@ -25,5 +25,5 @@ Run the tests:
 
 ~~~ text
 $ cd shunit2_example/
-$ bash shunit2/delete_stack.sh
+$ make
 ~~~
