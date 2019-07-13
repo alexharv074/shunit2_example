@@ -7,14 +7,14 @@ usage() {
 
 delete_all_artifacts() {
   aws ec2 delete-key-pair \
-    --key-name ${stack_name}
+    --key-name "$stack_name"
   aws s3 rm --recursive --quiet \
-    s3://${s3_bucket}/deployments/${stack_name}
+    s3://"$s3_bucket"/deployments/"$stack_name"
 }
 
 resume_all_autoscaling_processes() {
   asgs=$(aws cloudformation describe-stack-resources \
-    --stack-name $stack_name \
+    --stack-name "$stack_name" \
     --query \
 'StackResources[?ResourceType==`AWS::AutoScaling::AutoScalingGroup`].PhysicalResourceId' \
     --output text)
@@ -22,7 +22,7 @@ resume_all_autoscaling_processes() {
   for asg in $asgs
   do
     aws autoscaling resume-processes \
-      --auto-scaling-group-name $asg
+      --auto-scaling-group-name "$asg"
   done
 }
 
@@ -33,4 +33,4 @@ delete_all_artifacts
 resume_all_autoscaling_processes
 
 aws cloudformation delete-stack \
-  --stack-name ${stack_name}
+  --stack-name "$stack_name"

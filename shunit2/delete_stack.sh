@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 
-script_under_test=$(basename $0)
+script_under_test=$(basename "$0")
 
 setUp() {
   . placebo
-  pill_attach "command=aws" "data_path=shunit2/fixtures/aws.sh"
+  pill_attach "command=aws" "data_path=shunit2/fixtures"
   pill_playback
 }
 
 tearDown() {
-  pill_detach
   rm -f expected_log actual_log
 }
 
 testSimplestExample() {
-  . $script_under_test mystack mybucket
+  . "$script_under_test" 'mystack' 'mybucket'
 
   cat > expected_log <<'EOF'
 aws ec2 delete-key-pair --key-name mystack
@@ -27,18 +26,24 @@ EOF
 
   assertEquals "unexpected sequence of commands issued" \
     "" "$(diff -wu expected_log actual_log)"
+
+  pill_detach
 }
 
 testBadInputs() {
-  actual_stdout=$(. $script_under_test too many arguments passed in)
+  actual_stdout=$(. "$script_under_test" 'too' 'many' 'arguments' 'passed' 'in')
   assertTrue "unexpected response when passing bad inputs" \
     "echo $actual_stdout | grep -q ^Usage"
+
+  pill_detach
 }
 
 testNoASGs() {
-  . $script_under_test myotherstack mybucket
+  . "$script_under_test" 'myotherstack' 'mybucket'
   assertFalse "a resume-processes command was unexpectedly issued" \
     "pill_log | grep resume-processes"
+
+  pill_detach
 }
 
 . shunit2
